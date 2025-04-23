@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -8,7 +7,6 @@ import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Clock, MapPin, ArrowRight } from "lucide-react";
 
-// Sample product category data - in a real application, you would fetch this from an API
 const categories = [
   {
     id: 1,
@@ -54,7 +52,6 @@ const categories = [
   },
 ];
 
-// Sample featured products data - in a real application, you would fetch this from an API
 const featuredProducts = [
   {
     id: 1,
@@ -104,12 +101,11 @@ export default function Index() {
       <Navbar />
       <main>
         <Hero 
-          image="/lovable-uploads/071e5ffc-6682-4cb8-b028-b4409fc418e3.png"
-          title="On pense à vous, on pense à vos économies"
-          description="Vos produits préférés à des prix abordables, juste à côté de chez vous"
+          image="/lovable-uploads/3b91bcdc-2342-4e1c-b170-5bb9ecddfb49.png"
+          title="La qualité à portée de main"
+          description="tous les jours."
         />
 
-        {/* Intro Section */}
         <section className="py-16 bg-white">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-12">
@@ -148,7 +144,6 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Categories Section */}
         <section className="py-16 bg-gray-50">
           <div className="container">
             <div className="flex justify-between items-center mb-8">
@@ -175,7 +170,6 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Promotional Banner */}
         <section className="py-16 bg-white">
           <div className="container">
             <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-consom to-consom-dark p-8 md:p-12">
@@ -196,7 +190,6 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Featured Products */}
         <section className="py-16 bg-gray-50">
           <div className="container">
             <div className="flex justify-between items-center mb-8">
@@ -227,7 +220,6 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Call to Action */}
         <section className="py-16 bg-white">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto">
