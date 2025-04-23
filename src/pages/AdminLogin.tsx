@@ -27,7 +27,15 @@ export default function AdminLogin() {
         password
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Auth error:", error.message);
+        toast({
+          title: "Erreur de connexion",
+          description: "Identifiants invalides. Veuillez réessayer.",
+          variant: "destructive"
+        });
+        throw error;
+      }
 
       if (data.user) {
         toast({
@@ -37,6 +45,7 @@ export default function AdminLogin() {
         navigate("/admin/dashboard");
       }
     } catch (error: any) {
+      console.error("Login error:", error);
       toast({
         title: "Erreur de connexion",
         description: "Identifiants invalides. Veuillez réessayer.",
