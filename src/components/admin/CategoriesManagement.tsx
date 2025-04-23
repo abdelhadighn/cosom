@@ -9,6 +9,7 @@ import { toast } from "@/components/ui/use-toast";
 export function CategoriesManagement() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -58,27 +59,29 @@ export function CategoriesManagement() {
     if (!session) {
       toast({
         title: "Non authentifié",
-        description: "Veuillez vous connecter pour ajouter une catégorie",
+        description: "Veuillez vous connecter pour gérer les catégories",
         variant: "destructive"
       });
       setLoading(false);
       return;
     }
 
-    const { error } = await supabase
-      .from('categories')
-      .insert([formData]);
+    const operation = editingCategory 
+      ? supabase.from('categories').update(formData).eq('id', editingCategory.id)
+      : supabase.from('categories').insert([formData]);
+
+    const { error } = await operation;
 
     if (error) {
       toast({
         title: "Erreur",
-        description: "Impossible d'ajouter la catégorie. Vérifiez vos informations.",
+        description: `Impossible de ${editingCategory ? 'modifier' : 'ajouter'} la catégorie`,
         variant: "destructive"
       });
     } else {
       toast({
         title: "Succès",
-        description: "Catégorie ajoutée avec succès"
+        description: `Catégorie ${editingCategory ? 'modifiée' : 'ajoutée'} avec succès`
       });
       setFormData({
         name: "",
@@ -86,47 +89,28 @@ export function CategoriesManagement() {
         image_url: "",
         product_count: 0
       });
+      setEditingCategory(null);
       fetchCategories();
     }
     setLoading(false);
   };
 
-  const handleDelete = async (id: string) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-      toast({
-        title: "Non authentifié",
-        description: "Veuillez vous connecter pour supprimer une catégorie",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const { error } = await supabase
-      .from('categories')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de supprimer la catégorie",
-        variant: "destructive"
-      });
-    } else {
-      toast({
-        title: "Succès",
-        description: "Catégorie supprimée avec succès"
-      });
-      fetchCategories();
-    }
+  const handleEdit = (category: any) => {
+    setEditingCategory(category);
+    setFormData({
+      name: category.name,
+      slug: category.slug,
+      image_url: category.image_url,
+      product_count: category.product_count
+    });
   };
 
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-6">Ajouter une catégorie</h2>
+        <h2 className="text-2xl font-bold mb-6">
+          {editingCategory ? 'Modifier la catégorie' : 'Ajouter une catégorie'}
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -157,9 +141,28 @@ export function CategoriesManagement() {
               />
             </div>
           </div>
-          <Button type="submit" disabled={loading}>
-            {loading ? "En cours..." : "Ajouter la catégorie"}
-          </Button>
+          <div className="flex gap-2">
+            <Button type="submit" disabled={loading}>
+              {loading ? "En cours..." : editingCategory ? "Modifier" : "Ajouter"}
+            </Button>
+            {editingCategory && (
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => {
+                  setEditingCategory(null);
+                  setFormData({
+                    name: "",
+                    slug: "",
+                    image_url: "",
+                    product_count: 0
+                  });
+                }}
+              >
+                Annuler
+              </Button>
+            )}
+          </div>
         </form>
       </div>
 
@@ -178,7 +181,13 @@ export function CategoriesManagement() {
               <p className="text-sm text-gray-600">
                 {category.product_count} produit{category.product_count !== 1 ? 's' : ''}
               </p>
-              <div className="mt-4 flex justify-end">
+              <div className="mt-4 flex justify-end gap-2">
+                <Button 
+                  variant="outline"
+                  onClick={() => handleEdit(category)}
+                >
+                  Modifier
+                </Button>
                 <Button 
                   variant="destructive" 
                   onClick={() => handleDelete(category.id)}

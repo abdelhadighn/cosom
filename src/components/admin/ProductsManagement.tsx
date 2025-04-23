@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { toast } from "@/components/ui/use-toast";
 export function ProductsManagement() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -62,27 +62,29 @@ export function ProductsManagement() {
     if (!session) {
       toast({
         title: "Non authentifié",
-        description: "Veuillez vous connecter pour ajouter un produit",
+        description: "Veuillez vous connecter pour gérer les produits",
         variant: "destructive"
       });
       setLoading(false);
       return;
     }
 
-    const { error } = await supabase
-      .from('products')
-      .insert([formData]);
+    const operation = editingProduct 
+      ? supabase.from('products').update(formData).eq('id', editingProduct.id)
+      : supabase.from('products').insert([formData]);
+
+    const { error } = await operation;
 
     if (error) {
       toast({
         title: "Erreur",
-        description: "Impossible d'ajouter le produit. Vérifiez vos informations.",
+        description: `Impossible de ${editingProduct ? 'modifier' : 'ajouter'} le produit`,
         variant: "destructive"
       });
     } else {
       toast({
         title: "Succès",
-        description: "Produit ajouté avec succès"
+        description: `Produit ${editingProduct ? 'modifié' : 'ajouté'} avec succès`
       });
       setFormData({
         name: "",
@@ -93,9 +95,23 @@ export function ProductsManagement() {
         price: "",
         is_promoted: false
       });
+      setEditingProduct(null);
       fetchProducts();
     }
     setLoading(false);
+  };
+
+  const handleEdit = (product: any) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      category: product.category,
+      image_url: product.image_url,
+      description: product.description,
+      brand: product.brand,
+      price: product.price,
+      is_promoted: product.is_promoted
+    });
   };
 
   const handleDelete = async (id: string) => {
@@ -133,7 +149,9 @@ export function ProductsManagement() {
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-6">Ajouter un produit</h2>
+        <h2 className="text-2xl font-bold mb-6">
+          {editingProduct ? 'Modifier le produit' : 'Ajouter un produit'}
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -191,9 +209,31 @@ export function ProductsManagement() {
               />
             </div>
           </div>
-          <Button type="submit" disabled={loading}>
-            {loading ? "En cours..." : "Ajouter le produit"}
-          </Button>
+          <div className="flex gap-2">
+            <Button type="submit" disabled={loading}>
+              {loading ? "En cours..." : editingProduct ? "Modifier" : "Ajouter"}
+            </Button>
+            {editingProduct && (
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => {
+                  setEditingProduct(null);
+                  setFormData({
+                    name: "",
+                    category: "",
+                    image_url: "",
+                    description: "",
+                    brand: "",
+                    price: "",
+                    is_promoted: false
+                  });
+                }}
+              >
+                Annuler
+              </Button>
+            )}
+          </div>
         </form>
       </div>
 
@@ -210,7 +250,13 @@ export function ProductsManagement() {
               <h3 className="font-bold">{product.name}</h3>
               <p className="text-sm text-gray-600">{product.description}</p>
               <p className="text-lg font-semibold mt-2">{product.price}</p>
-              <div className="mt-4 flex justify-end">
+              <div className="mt-4 flex justify-end gap-2">
+                <Button 
+                  variant="outline"
+                  onClick={() => handleEdit(product)}
+                >
+                  Modifier
+                </Button>
                 <Button 
                   variant="destructive" 
                   onClick={() => handleDelete(product.id)}
