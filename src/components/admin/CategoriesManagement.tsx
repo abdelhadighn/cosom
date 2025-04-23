@@ -21,6 +21,17 @@ export function CategoriesManagement() {
   }, []);
 
   const fetchCategories = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast({
+        title: "Non authentifié",
+        description: "Veuillez vous connecter pour gérer les catégories",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const { data, error } = await supabase
       .from('categories')
       .select('*')
@@ -42,6 +53,18 @@ export function CategoriesManagement() {
     e.preventDefault();
     setLoading(true);
 
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast({
+        title: "Non authentifié",
+        description: "Veuillez vous connecter pour ajouter une catégorie",
+        variant: "destructive"
+      });
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase
       .from('categories')
       .insert([formData]);
@@ -49,7 +72,7 @@ export function CategoriesManagement() {
     if (error) {
       toast({
         title: "Erreur",
-        description: "Impossible d'ajouter la catégorie",
+        description: "Impossible d'ajouter la catégorie. Vérifiez vos informations.",
         variant: "destructive"
       });
     } else {
@@ -69,6 +92,17 @@ export function CategoriesManagement() {
   };
 
   const handleDelete = async (id: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast({
+        title: "Non authentifié",
+        description: "Veuillez vous connecter pour supprimer une catégorie",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const { error } = await supabase
       .from('categories')
       .delete()

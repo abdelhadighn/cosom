@@ -25,6 +25,17 @@ export function ProductsManagement() {
   }, []);
 
   const fetchProducts = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast({
+        title: "Non authentifié",
+        description: "Veuillez vous connecter pour gérer les produits",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const { data, error } = await supabase
       .from('products')
       .select('*')
@@ -46,6 +57,18 @@ export function ProductsManagement() {
     e.preventDefault();
     setLoading(true);
 
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast({
+        title: "Non authentifié",
+        description: "Veuillez vous connecter pour ajouter un produit",
+        variant: "destructive"
+      });
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase
       .from('products')
       .insert([formData]);
@@ -53,7 +76,7 @@ export function ProductsManagement() {
     if (error) {
       toast({
         title: "Erreur",
-        description: "Impossible d'ajouter le produit",
+        description: "Impossible d'ajouter le produit. Vérifiez vos informations.",
         variant: "destructive"
       });
     } else {
@@ -76,6 +99,17 @@ export function ProductsManagement() {
   };
 
   const handleDelete = async (id: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast({
+        title: "Non authentifié",
+        description: "Veuillez vous connecter pour supprimer un produit",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const { error } = await supabase
       .from('products')
       .delete()
