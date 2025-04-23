@@ -9,7 +9,131 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          password_hash: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          password_hash: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          password_hash?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          name: string
+          product_count: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          name: string
+          product_count?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          name?: string
+          product_count?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      product_of_month: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          regular_price: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          regular_price: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          regular_price?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_of_month_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          brand: string
+          category: string
+          created_at: string
+          description: string
+          id: string
+          image_url: string
+          is_promoted: boolean
+          name: string
+          price: string
+          updated_at: string
+        }
+        Insert: {
+          brand: string
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          image_url: string
+          is_promoted?: boolean
+          name: string
+          price: string
+          updated_at?: string
+        }
+        Update: {
+          brand?: string
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string
+          is_promoted?: boolean
+          name?: string
+          price?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

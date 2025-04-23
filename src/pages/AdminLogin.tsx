@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,28 +8,43 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 export default function AdminLogin() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
-    
-    // Simulate login - in a real app, this would be an API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // This would be server validation in a real app
-      if (username === "admin" && password === "password") {
-        alert("Connexion réussie! Dans une application réelle, vous seriez redirigé vers le tableau de bord administrateur.");
-      } else {
-        setError("Identifiants invalides. Veuillez réessayer.");
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        toast({
+          title: "Connexion réussie",
+          description: "Bienvenue dans votre espace administrateur"
+        });
+        navigate("/admin/dashboard");
       }
-    }, 1000);
+    } catch (error: any) {
+      toast({
+        title: "Erreur de connexion",
+        description: "Identifiants invalides. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    }
+
+    setIsLoading(false);
   };
 
   return (
@@ -47,25 +63,19 @@ export default function AdminLogin() {
             
             <h1 className="text-2xl font-bold text-center mb-6">Espace Administrateur</h1>
             
-            {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4 text-sm">
-                {error}
-              </div>
-            )}
-            
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username">Nom d'utilisateur</Label>
+                  <Label htmlFor="email">Email</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input 
-                      id="username"
-                      type="text"
-                      placeholder="Entrez votre nom d'utilisateur"
+                      id="email"
+                      type="email"
+                      placeholder="Entrez votre email"
                       className="pl-10"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
@@ -99,9 +109,6 @@ export default function AdminLogin() {
             </form>
             
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Mot de passe oublié ? Contactez l'administrateur système.
-              </p>
               <Link to="/" className="text-sm text-consom hover:underline block mt-2">
                 Retour à la page d'accueil
               </Link>

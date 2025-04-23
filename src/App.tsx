@@ -10,6 +10,7 @@ import Products from "./pages/Products";
 import ProductCategory from "./pages/ProductCategory";
 import Promotions from "./pages/Promotions";
 import AdminLogin from "./pages/AdminLogin";
+import Dashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/products/:category" element={<ProductCategory />} />
           <Route path="/promotions" element={<Promotions />} />
           <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
