@@ -105,6 +105,31 @@ export function CategoriesManagement() {
     });
   };
 
+  const handleDelete = async (id: string) => {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cette catégorie?")) return;
+
+    setLoading(true);
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer la catégorie",
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Succès",
+        description: "Catégorie supprimée avec succès"
+      });
+      fetchCategories();
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow">
