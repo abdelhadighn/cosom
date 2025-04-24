@@ -124,6 +124,31 @@ export function ProductsManagement() {
     });
   };
 
+  const handleDelete = async (productId: string) => {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
+      setLoading(true);
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', productId);
+        
+      if (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de supprimer le produit",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Succès",
+          description: "Produit supprimé avec succès"
+        });
+        fetchProducts();
+      }
+      setLoading(false);
+    }
+  };
+
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||

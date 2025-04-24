@@ -7,9 +7,20 @@ import { Hero } from "@/components/Hero";
 import { ProductCard } from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 
+interface Product {
+  id: string;
+  name: string;
+  image_url: string;
+  brand: string;
+  price: string;
+  description: string;
+  category_id: string;
+  is_promoted: boolean;
+}
+
 export default function ProductCategory() {
-  const { category } = useParams();
-  const [products, setProducts] = useState<any[]>([]);
+  const { category } = useParams<{ category: string }>();
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryName, setCategoryName] = useState("");
 
@@ -24,7 +35,7 @@ export default function ProductCategory() {
     const { data, error } = await supabase
       .from('products')
       .select('*')
-      .eq('category', category);
+      .eq('category_id', category);
 
     if (!error && data) {
       setProducts(data);
@@ -36,8 +47,8 @@ export default function ProductCategory() {
     const { data, error } = await supabase
       .from('categories')
       .select('name')
-      .eq('slug', category)
-      .single();
+      .eq('id', category)
+      .maybeSingle();
 
     if (!error && data) {
       setCategoryName(data.name);
