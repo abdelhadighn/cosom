@@ -4,15 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
+import { Search } from "lucide-react";
 
 export function ProductsManagement() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
+    category_id: "",
     image_url: "",
     description: "",
     brand: "",
@@ -22,7 +32,19 @@ export function ProductsManagement() {
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name');
+
+    if (!error && data) {
+      setCategories(data);
+    }
+  };
 
   const fetchProducts = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -57,18 +79,6 @@ export function ProductsManagement() {
     e.preventDefault();
     setLoading(true);
 
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-      toast({
-        title: "Non authentifié",
-        description: "Veuillez vous connecter pour gérer les produits",
-        variant: "destructive"
-      });
-      setLoading(false);
-      return;
-    }
-
     const operation = editingProduct 
       ? supabase.from('products').update(formData).eq('id', editingProduct.id)
       : supabase.from('products').insert([formData]);
@@ -88,7 +98,7 @@ export function ProductsManagement() {
       });
       setFormData({
         name: "",
-        category: "",
+        category_id: "",
         image_url: "",
         description: "",
         brand: "",
@@ -105,7 +115,7 @@ export function ProductsManagement() {
     setEditingProduct(product);
     setFormData({
       name: product.name,
-      category: product.category,
+      category_id: product.category_id,
       image_url: product.image_url,
       description: product.description,
       brand: product.brand,
@@ -114,37 +124,11 @@ export function ProductsManagement() {
     });
   };
 
-  const handleDelete = async (id: string) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-      toast({
-        title: "Non authentifié",
-        description: "Veuillez vous connecter pour supprimer un produit",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const { error } = await supabase
-      .from('products')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de supprimer le produit",
-        variant: "destructive"
-      });
-    } else {
-      toast({
-        title: "Succès",
-        description: "Produit supprimé avec succès"
-      });
-      fetchProducts();
-    }
-  };
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-8">
@@ -165,12 +149,21 @@ export function ProductsManagement() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="category">Catégorie</Label>
-              <Input
-                id="category"
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                required
-              />
+              <Select
+                value={formData.category_id}
+                onValueChange={(value) => setFormData({ ...formData, category_id: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionner une catégorie" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="brand">Marque</Label>
@@ -221,7 +214,7 @@ export function ProductsManagement() {
                   setEditingProduct(null);
                   setFormData({
                     name: "",
-                    category: "",
+                    category_id: "",
                     image_url: "",
                     description: "",
                     brand: "",
@@ -238,9 +231,22 @@ export function ProductsManagement() {
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-6">Liste des produits</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Liste des produits</h2>
+          <div className="relative w-64">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="text"
+              placeholder="Rechercher un produit..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+        
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <div key={product.id} className="border p-4 rounded-lg">
               <img 
                 src={product.image_url} 
@@ -266,6 +272,16 @@ export function ProductsManagement() {
               </div>
             </div>
           ))}
+          {filteredProducts.length === 0 && (
+            <div className="col-span-full text-center py-12">
+              <h3 className="text-xl font-medium text-gray-700 mb-2">
+                Aucun produit trouvé
+              </h3>
+              <p className="text-gray-500">
+                Essayez d'autres termes de recherche
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

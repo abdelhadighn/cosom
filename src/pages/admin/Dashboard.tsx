@@ -7,11 +7,12 @@ import { AdminNav } from "@/components/admin/AdminNav";
 import { ProductsManagement } from "@/components/admin/ProductsManagement";
 import { CategoriesManagement } from "@/components/admin/CategoriesManagement";
 import { PromotionsManagement } from "@/components/admin/PromotionsManagement";
+import { MessagesManagement } from "@/components/admin/MessagesManagement";
 import { toast } from "@/components/ui/use-toast";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState<'products' | 'categories' | 'promotions'>('products');
+  const [activeSection, setActiveSection] = useState<'products' | 'categories' | 'promotions' | 'messages'>('products');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -71,6 +72,7 @@ export default function Dashboard() {
         {activeSection === 'products' && <ProductsManagement />}
         {activeSection === 'categories' && <CategoriesManagement />}
         {activeSection === 'promotions' && <PromotionsManagement />}
+        {activeSection === 'messages' && <MessagesManagement />}
       </main>
     </div>
   );

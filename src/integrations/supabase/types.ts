@@ -63,6 +63,33 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          message: string
+          name: string
+          read: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          message: string
+          name: string
+          read?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          read?: boolean | null
+        }
+        Relationships: []
+      }
       product_of_month: {
         Row: {
           created_at: string
@@ -98,7 +125,7 @@ export type Database = {
       products: {
         Row: {
           brand: string
-          category: string
+          category_id: string | null
           created_at: string
           description: string
           id: string
@@ -110,7 +137,7 @@ export type Database = {
         }
         Insert: {
           brand: string
-          category: string
+          category_id?: string | null
           created_at?: string
           description: string
           id?: string
@@ -122,7 +149,7 @@ export type Database = {
         }
         Update: {
           brand?: string
-          category?: string
+          category_id?: string | null
           created_at?: string
           description?: string
           id?: string
@@ -132,7 +159,15 @@ export type Database = {
           price?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
