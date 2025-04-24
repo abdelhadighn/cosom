@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,18 +14,17 @@ export function Categories() {
   }, []);
 
   const fetchCategories = async () => {
-    const { data: categoriesData, error: categoriesError } = await supabase
+    const { data: categoriesData, error } = await supabase
       .from('categories')
       .select(`
         *,
         products (count)
       `);
 
-    if (!categoriesError && categoriesData) {
-      // Update product count for each category
+    if (!error && categoriesData) {
       const categoriesWithCount = categoriesData.map(category => ({
         ...category,
-        product_count: category.products?.length || 0
+        product_count: category.products[0]?.count || 0
       }));
       setCategories(categoriesWithCount);
     }

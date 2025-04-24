@@ -21,8 +21,10 @@ export function CategoryCard({ name, slug, image, productCount }: CategoryCardPr
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4 text-white">
         <h3 className="font-medium text-lg">{name}</h3>
-        {productCount && (
-          <p className="text-sm text-white/80">{productCount} produits</p>
+        {typeof productCount === 'number' && (
+          <p className="text-sm text-white/80">
+            {productCount} {productCount > 1 ? 'produits' : 'produit'}
+          </p>
         )}
       </div>
     </Link>
