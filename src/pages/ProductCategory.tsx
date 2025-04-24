@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/Hero";
 import { ProductCard } from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 interface Product {
   id: string;
@@ -26,44 +27,91 @@ export default function ProductCategory() {
 
   useEffect(() => {
     if (category) {
-      fetchProducts();
       fetchCategoryName();
+      fetchProducts();
     }
   }, [category]);
 
   const fetchProducts = async () => {
-    console.log("Fetching products for category:", category);
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('category_id', category);
+    console.log("Fetching products for category slug:", category);
+    
+    try {
+      // First get the category ID from the slug
+      const { data: categoryData, error: categoryError } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('slug', category)
+        .maybeSingle();
+        
+      if (categoryError) {
+        console.error("Error fetching category ID:", categoryError);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger la catégorie",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+      
+      if (!categoryData) {
+        console.log("No category found with slug:", category);
+        setLoading(false);
+        return;
+      }
+      
+      console.log("Found category with ID:", categoryData.id, "for slug:", category);
+      
+      // Then fetch products with that category ID
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('*')
+        .eq('category_id', categoryData.id);
 
-    if (error) {
-      console.error("Error fetching products:", error);
+      if (productsError) {
+        console.error("Error fetching products:", productsError);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les produits",
+          variant: "destructive",
+        });
+      } else if (productsData) {
+        console.log("Products found:", productsData.length, productsData);
+        setProducts(productsData);
+      } else {
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
     }
     
-    if (data) {
-      console.log("Products found:", data.length, data);
-      setProducts(data);
-    } else {
-      setProducts([]);
-    }
     setLoading(false);
   };
 
   const fetchCategoryName = async () => {
+    console.log("Fetching category name for slug:", category);
+    
     const { data, error } = await supabase
       .from('categories')
       .select('name')
-      .eq('id', category)
+      .eq('slug', category)
       .maybeSingle();
 
     if (error) {
       console.error("Error fetching category name:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger le nom de la catégorie",
+        variant: "destructive",
+      });
     }
     
     if (data) {
+      console.log("Category name found:", data.name);
       setCategoryName(data.name);
+    } else {
+      console.log("No category name found");
+      setCategoryName("");
     }
   };
 
@@ -73,7 +121,7 @@ export default function ProductCategory() {
       <main>
         <Hero 
           image="/lovable-uploads/3b91bcdc-2342-4e1c-b170-5bb9ecddfb49.png"
-          title={`Nos ${categoryName}`}
+          title={categoryName ? `Nos ${categoryName}` : "Catégorie"}
           description="Découvrez notre sélection de produits de qualité"
           overlay={true}
         />
