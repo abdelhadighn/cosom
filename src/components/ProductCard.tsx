@@ -1,6 +1,5 @@
 
 import { Link } from "react-router-dom";
-import { Button } from "./ui/button";
 
 interface ProductCardProps {
   id: string | number;
@@ -17,10 +16,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ 
-  id, 
   name, 
-  category, 
-  category_id,
   image, 
   image_url,
   description, 
@@ -33,8 +29,6 @@ export function ProductCard({
   const promoted = isPromoted || is_promoted;
   // Use either image or image_url, whichever is available
   const imageSource = image || image_url;
-  // Use either category or category_id for the link, defaulting to category_id
-  const categoryParam = category || category_id;
   
   return (
     <div className={`group rounded-lg overflow-hidden border ${promoted ? 'border-consom shadow-md' : 'border-gray-200'}`}>
@@ -57,14 +51,9 @@ export function ProductCard({
         <h3 className="font-medium text-base mt-1">{name}</h3>
         <p className="text-gray-600 text-sm mt-2 line-clamp-2">{description}</p>
         
-        <div className="mt-4 flex justify-between items-center">
-          {price && (
-            <p className="font-medium">{price}</p>
-          )}
-          <Button variant="consomOutline" size="sm" asChild>
-            <Link to={`/products/${categoryParam}/${id}`}>Détails</Link>
-          </Button>
-        </div>
+        {price && (
+          <p className="font-medium mt-4">{price}</p>
+        )}
       </div>
     </div>
   );

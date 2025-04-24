@@ -15,13 +15,20 @@ export function Categories() {
   }, []);
 
   const fetchCategories = async () => {
-    const { data, error } = await supabase
+    const { data: categoriesData, error: categoriesError } = await supabase
       .from('categories')
-      .select('*')
-      .order('name');
+      .select(`
+        *,
+        products (count)
+      `);
 
-    if (!error && data) {
-      setCategories(data);
+    if (!categoriesError && categoriesData) {
+      // Update product count for each category
+      const categoriesWithCount = categoriesData.map(category => ({
+        ...category,
+        product_count: category.products?.length || 0
+      }));
+      setCategories(categoriesWithCount);
     }
     setLoading(false);
   };
