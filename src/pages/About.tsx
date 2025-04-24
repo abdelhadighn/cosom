@@ -2,9 +2,10 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/Hero";
-import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ContactDialog } from "@/components/ContactDialog";
+import { Button } from "@/components/ui/button";
 
 export default function About() {
   return (
@@ -96,7 +97,7 @@ export default function About() {
               <div className="md:col-span-2">
                 <h2 className="text-3xl font-bold mb-6">Contactez-nous</h2>
                 <p className="text-gray-600 mb-8">
-                  Nous sommes à votre écoute pour toute question, suggestion ou réclamation. N'hésitez pas à nous contacter.
+                  Nous sommes à votre écoute pour toute question ou suggestion. N'hésitez pas à nous contacter.
                 </p>
 
                 <div className="space-y-6">
@@ -136,9 +137,9 @@ export default function About() {
                   </div>
                 </div>
 
-                <Button variant="consom" className="mt-8" asChild>
-                  <Link to="mailto:contact@consom.fr">Nous contacter</Link>
-                </Button>
+                <div className="mt-8">
+                  <ContactDialog />
+                </div>
               </div>
 
               <div className="md:col-span-3 rounded-lg overflow-hidden h-[400px]">
