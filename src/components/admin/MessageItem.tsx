@@ -1,6 +1,5 @@
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 interface MessageItemProps {
   message: {
@@ -19,9 +18,6 @@ export function MessageItem({ message, onMarkAsRead }: MessageItemProps) {
         <div className="flex-1">
           <p className="text-gray-700">{message.message}</p>
         </div>
-        {!message.read && (
-          <Badge variant="secondary">Nouveau</Badge>
-        )}
       </div>
       <div className="flex justify-between items-center mt-4">
         <span className="text-sm text-gray-500">
@@ -33,15 +29,6 @@ export function MessageItem({ message, onMarkAsRead }: MessageItemProps) {
             minute: '2-digit'
           })}
         </span>
-        {!message.read && (
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => onMarkAsRead(message.id)}
-          >
-            Marquer comme lu
-          </Button>
-        )}
       </div>
     </div>
   );

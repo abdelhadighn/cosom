@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,10 @@ export function CategoriesManagement() {
 
     const { data, error } = await supabase
       .from('categories')
-      .select('*')
+      .select(`
+        *,
+        products (count)
+      `)
       .order('name');
 
     if (error) {
@@ -44,8 +46,12 @@ export function CategoriesManagement() {
         description: "Impossible de charger les catégories",
         variant: "destructive"
       });
-    } else {
-      setCategories(data || []);
+    } else if (data) {
+      const categoriesWithCount = data.map(category => ({
+        ...category,
+        product_count: category.products[0]?.count || 0
+      }));
+      setCategories(categoriesWithCount);
     }
     setLoading(false);
   };

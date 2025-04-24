@@ -21,11 +21,17 @@ export default function Products() {
   const fetchCategories = async () => {
     const { data, error } = await supabase
       .from('categories')
-      .select('*')
-      .order('name');
+      .select(`
+        *,
+        products (count)
+      `);
 
     if (!error && data) {
-      setCategories(data);
+      const categoriesWithCount = data.map(category => ({
+        ...category,
+        product_count: category.products[0]?.count || 0
+      }));
+      setCategories(categoriesWithCount);
     }
     setLoading(false);
   };
