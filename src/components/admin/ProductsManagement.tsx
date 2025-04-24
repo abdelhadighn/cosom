@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -79,19 +80,34 @@ export function ProductsManagement() {
     e.preventDefault();
     setLoading(true);
 
+    console.log("Submitting product with data:", formData);
+
+    // Make sure category_id is not empty
+    if (!formData.category_id) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez sélectionner une catégorie",
+        variant: "destructive"
+      });
+      setLoading(false);
+      return;
+    }
+
     const operation = editingProduct 
       ? supabase.from('products').update(formData).eq('id', editingProduct.id)
       : supabase.from('products').insert([formData]);
 
-    const { error } = await operation;
+    const { error, data } = await operation;
 
     if (error) {
+      console.error("Error submitting product:", error);
       toast({
         title: "Erreur",
         description: `Impossible de ${editingProduct ? 'modifier' : 'ajouter'} le produit`,
         variant: "destructive"
       });
     } else {
+      console.log("Product submitted successfully:", data);
       toast({
         title: "Succès",
         description: `Produit ${editingProduct ? 'modifié' : 'ajouté'} avec succès`
@@ -154,6 +170,12 @@ export function ProductsManagement() {
     product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Function to get category name by id
+  const getCategoryName = (categoryId: string) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.name : "Non catégorisé";
+  };
 
   return (
     <div className="space-y-8">
@@ -281,6 +303,7 @@ export function ProductsManagement() {
               <h3 className="font-bold">{product.name}</h3>
               <p className="text-sm text-gray-600">{product.description}</p>
               <p className="text-lg font-semibold mt-2">{product.price}</p>
+              <p className="text-sm text-gray-600">Catégorie: {getCategoryName(product.category_id)}</p>
               <div className="mt-4 flex justify-end gap-2">
                 <Button 
                   variant="outline"

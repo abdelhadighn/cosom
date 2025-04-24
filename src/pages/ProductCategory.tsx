@@ -32,13 +32,21 @@ export default function ProductCategory() {
   }, [category]);
 
   const fetchProducts = async () => {
+    console.log("Fetching products for category:", category);
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .eq('category_id', category);
 
-    if (!error && data) {
+    if (error) {
+      console.error("Error fetching products:", error);
+    }
+    
+    if (data) {
+      console.log("Products found:", data.length, data);
       setProducts(data);
+    } else {
+      setProducts([]);
     }
     setLoading(false);
   };
@@ -50,7 +58,11 @@ export default function ProductCategory() {
       .eq('id', category)
       .maybeSingle();
 
-    if (!error && data) {
+    if (error) {
+      console.error("Error fetching category name:", error);
+    }
+    
+    if (data) {
       setCategoryName(data.name);
     }
   };
