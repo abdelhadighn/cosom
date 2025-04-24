@@ -3,35 +3,48 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 
 interface ProductCardProps {
-  id: number;
+  id: string | number;
   name: string;
-  category: string;
-  image: string;
+  category_id?: string;
+  category?: string;
+  image_url?: string;
+  image?: string;
   description: string;
   brand?: string;
   price?: string;
   isPromoted?: boolean;
+  is_promoted?: boolean;
 }
 
 export function ProductCard({ 
   id, 
   name, 
   category, 
+  category_id,
   image, 
+  image_url,
   description, 
   brand, 
   price, 
-  isPromoted = false 
+  isPromoted = false,
+  is_promoted = false
 }: ProductCardProps) {
+  // Use either is_promoted or isPromoted, whichever is available
+  const promoted = isPromoted || is_promoted;
+  // Use either image or image_url, whichever is available
+  const imageSource = image || image_url;
+  // Use either category or category_id for the link, defaulting to category_id
+  const categoryParam = category || category_id;
+  
   return (
-    <div className={`group rounded-lg overflow-hidden border ${isPromoted ? 'border-consom shadow-md' : 'border-gray-200'}`}>
+    <div className={`group rounded-lg overflow-hidden border ${promoted ? 'border-consom shadow-md' : 'border-gray-200'}`}>
       <div className="relative h-48 overflow-hidden bg-gray-100">
         <img 
-          src={image} 
+          src={imageSource} 
           alt={name} 
           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
         />
-        {isPromoted && (
+        {promoted && (
           <div className="absolute top-2 right-2 bg-consom text-white text-xs font-bold py-1 px-3 rounded-full">
             Promotion
           </div>
@@ -49,7 +62,7 @@ export function ProductCard({
             <p className="font-medium">{price}</p>
           )}
           <Button variant="consomOutline" size="sm" asChild>
-            <Link to={`/products/${category}/${id}`}>Détails</Link>
+            <Link to={`/products/${categoryParam}/${id}`}>Détails</Link>
           </Button>
         </div>
       </div>

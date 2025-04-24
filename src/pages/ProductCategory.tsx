@@ -77,7 +77,14 @@ export default function ProductCategory() {
                 {products.map((product) => (
                   <ProductCard
                     key={product.id}
-                    {...product}
+                    id={product.id}
+                    name={product.name}
+                    brand={product.brand}
+                    price={product.price}
+                    description={product.description}
+                    image_url={product.image_url}
+                    is_promoted={product.is_promoted}
+                    category_id={product.category_id}
                   />
                 ))}
               </div>
