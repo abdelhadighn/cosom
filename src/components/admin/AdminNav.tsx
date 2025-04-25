@@ -23,26 +23,30 @@ export function AdminNav({
             />
             <div className="hidden md:flex space-x-2">
               <Button
-                variant={activeSection === 'products' ? "default" : "ghost"}
+                variant="blue"
                 onClick={() => setActiveSection('products')}
+                className={activeSection === 'products' ? "bg-[#1EAEDB]" : ""}
               >
                 Produits
               </Button>
               <Button
-                variant={activeSection === 'categories' ? "default" : "ghost"}
+                variant="blue"
                 onClick={() => setActiveSection('categories')}
+                className={activeSection === 'categories' ? "bg-[#1EAEDB]" : ""}
               >
                 Catégories
               </Button>
               <Button
-                variant={activeSection === 'promotions' ? "default" : "ghost"}
+                variant="blue"
                 onClick={() => setActiveSection('promotions')}
+                className={activeSection === 'promotions' ? "bg-[#1EAEDB]" : ""}
               >
                 Promotions
               </Button>
               <Button
-                variant={activeSection === 'messages' ? "default" : "ghost"}
+                variant="blue"
                 onClick={() => setActiveSection('messages')}
+                className={activeSection === 'messages' ? "bg-[#1EAEDB]" : ""}
               >
                 Messages
                 <MessageSquare className="ml-2 h-4 w-4" />

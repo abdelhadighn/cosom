@@ -14,7 +14,7 @@ export default function Index() {
       <Navbar />
       <main>
         <Hero 
-          image="/images/hero-bg.png"
+          image="/lovable-uploads/3b91bcdc-2342-4e1c-b170-5bb9ecddfb49.png"
           title="La qualité à portée de main"
           description="tous les jours."
         />

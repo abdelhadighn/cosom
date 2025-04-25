@@ -1,57 +1,52 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/Hero";
-import { ProductCard } from "@/components/ProductCard";
-import { supabase } from "@/integrations/supabase/client";
-import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 export default function Promotions() {
-  const [promotedProducts, setPromotedProducts] = useState<any[]>([]);
-  const [productOfMonth, setProductOfMonth] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    fetchPromotedProducts();
-    fetchProductOfMonth();
-  }, []);
-
-  const fetchPromotedProducts = async () => {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('is_promoted', true);
-
-    if (!error && data) {
-      setPromotedProducts(data);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [promotions] = useState([
+    {
+      id: 1,
+      title: "Remise de 20% sur les fruits frais",
+      description: "Profitez d'une réduction de 20% sur tous les fruits frais jusqu'à ce dimanche.",
+      image: "/placeholder.svg",
+      discountPercentage: 20,
+      validUntil: "2023-08-30",
+    },
+    {
+      id: 2,
+      title: "2 pour le prix d'1 sur les produits laitiers",
+      description: "Achetez un produit laitier et obtenez-en un second gratuitement.",
+      image: "/placeholder.svg",
+      discountPercentage: 50,
+      validUntil: "2023-08-25",
+    },
+    {
+      id: 3,
+      title: "30% de remise sur les céréales",
+      description: "Réduction exceptionnelle sur toutes nos céréales de marque.",
+      image: "/placeholder.svg",
+      discountPercentage: 30,
+      validUntil: "2023-09-05",
+    },
+    {
+      id: 4,
+      title: "Réduction sur les produits ménagers",
+      description: "15% de réduction sur tous les produits d'entretien de la maison.",
+      image: "/placeholder.svg",
+      discountPercentage: 15,
+      validUntil: "2023-09-10",
     }
-    setLoading(false);
-  };
+  ]);
 
-  const fetchProductOfMonth = async () => {
-    const { data: monthData, error: monthError } = await supabase
-      .from('product_of_month')
-      .select(`
-        *,
-        product:products(*)
-      `)
-      .limit(1)
-      .single();
-
-    if (!monthError && monthData) {
-      setProductOfMonth({
-        ...monthData.product,
-        regularPrice: monthData.regular_price
-      });
-    }
-  };
-
-  const filteredProducts = promotedProducts.filter(product => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.brand?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPromotions = promotions.filter(promo => 
+    promo.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    promo.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -59,115 +54,68 @@ export default function Promotions() {
       <Navbar />
       <main>
         <Hero 
-          image="/images/promotions-bg.png"
+          image="/lovable-uploads/071e5ffc-6682-4cb8-b028-b4409fc418e3.png"
           title="Promotions en Cours"
           description="Découvrez nos offres spéciales et économisez sur vos produits préférés"
           buttonText="Voir tous les produits"
-          buttonUrl="/products"
+          buttonLink="/products"
         />
-
-        <section className="py-8 bg-white border-b">
+        
+        <section className="py-12 bg-secondary">
           <div className="container">
-            <div className="max-w-md mx-auto">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 mb-8">
+              <div className="relative flex-1">
                 <Input
-                  type="text"
-                  placeholder="Rechercher un produit..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  type="search"
+                  placeholder="Rechercher des promotions..."
                   className="pl-10"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
+              <Button 
+                variant="blue" 
+                onClick={() => setSearchQuery("")}
+                className="md:w-auto"
+              >
+                Réinitialiser
+              </Button>
             </div>
-          </div>
-        </section>
-
-        {productOfMonth && (
-          <section className="py-16 bg-white">
-            <div className="container">
-              <h2 className="text-3xl font-bold text-center mb-12">Produit du Mois</h2>
-              <div className="max-w-4xl mx-auto bg-gray-50 rounded-lg overflow-hidden shadow-md">
-                <div className="grid md:grid-cols-2 gap-0">
-                  <div className="h-full">
-                    <img 
-                      src={productOfMonth.image_url} 
-                      alt={productOfMonth.name} 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-8 flex flex-col justify-center">
-                    <div className="inline-block px-3 py-1 bg-consom text-white text-xs font-semibold rounded-full mb-4">
-                      Exclusivité
-                    </div>
-                    <h3 className="text-2xl font-bold mb-2">{productOfMonth.name}</h3>
-                    <p className="text-gray-500 text-sm mb-2">{productOfMonth.brand}</p>
-                    <p className="text-gray-700 mb-6">{productOfMonth.description}</p>
-                    <div className="flex justify-between items-center">
-                      <p className="text-2xl font-bold text-consom">{productOfMonth.price}</p>
-                      <span className="text-sm text-gray-500">Prix normal: {productOfMonth.regularPrice}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        <section className="py-16 bg-gray-50">
-          <div className="container">
-            <h2 className="text-3xl font-bold text-center mb-4">Offres Spéciales</h2>
-            <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
-              Profitez de nos promotions limitées dans le temps. Offres valables jusqu'à épuisement des stocks.
-            </p>
             
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-consom mx-auto"></div>
-              </div>
-            ) : filteredProducts.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredProducts.map(product => (
-                  <ProductCard
-                    key={product.id}
-                    {...product}
-                  />
+            {filteredPromotions.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {filteredPromotions.map((promotion) => (
+                  <div key={promotion.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div className="relative">
+                      <img 
+                        src={promotion.image} 
+                        alt={promotion.title} 
+                        className="w-full h-48 object-cover"
+                      />
+                      <div className="absolute top-2 right-2 bg-consom text-white font-bold px-2 py-1 rounded-md">
+                        -{promotion.discountPercentage}%
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg mb-2">{promotion.title}</h3>
+                      <p className="text-gray-600 text-sm mb-3">{promotion.description}</p>
+                      <p className="text-sm text-gray-500">
+                        Valable jusqu'au {new Date(promotion.validUntil).toLocaleDateString('fr-FR')}
+                      </p>
+                      <Button variant="blue" className="mt-3 w-full">
+                        En profiter
+                      </Button>
+                    </div>
+                  </div>
                 ))}
               </div>
             ) : (
               <div className="text-center py-12">
-                <h3 className="text-xl font-medium text-gray-700 mb-2">
-                  Aucun produit trouvé
-                </h3>
-                <p className="text-gray-500">
-                  Essayez d'autres termes de recherche
-                </p>
-                <Button 
-                  variant="outline" 
-                  className="mt-4 text-gray-700" 
-                  onClick={() => setSearchTerm("")}
-                >
-                  Réinitialiser la recherche
-                </Button>
+                <h3 className="text-2xl font-bold">Aucune promotion trouvée</h3>
+                <p className="text-muted-foreground mt-2">Essayez d'autres termes de recherche</p>
               </div>
             )}
-          </div>
-        </section>
-
-        <section className="py-16 bg-white">
-          <div className="container">
-            <div className="bg-consom/10 rounded-lg p-8 border border-consom/20">
-              <div className="max-w-3xl mx-auto text-center">
-                <h2 className="text-2xl font-bold mb-4">Comment bénéficier de nos promotions</h2>
-                <p className="text-gray-700 mb-6">
-                  Nos promotions sont disponibles directement en magasin, sans coupon ni carte de fidélité nécessaire. 
-                  Les prix affichés sont déjà réduits pour vous faire profiter immédiatement des économies.
-                </p>
-                <p className="text-gray-700">
-                  Rendez-vous dans votre supermarché Consom le plus proche pour découvrir encore plus d'offres exclusives!
-                </p>
-              </div>
-            </div>
           </div>
         </section>
       </main>

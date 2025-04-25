@@ -1,25 +1,29 @@
 
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function About() {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-card">
       <div className="container">
         <div className="text-center max-w-2xl mx-auto">
           <img 
-            src="/images/logo-dark.png" 
+            src="/lovable-uploads/b4315c86-97b2-4be4-8311-485eb9d9c1da.png" 
             alt="Consom Supermarché" 
             className="h-12 mb-6 mx-auto"
           />
-          <h2 className="text-3xl font-bold mb-4">Chaque client est Roi</h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Découvrez pourquoi des milliers de clients nous font confiance chaque jour pour leurs achats quotidiens.
-            Venez nous rendre visite dans votre supermarché Consom le plus proche.
+          <h2 className="text-3xl font-bold mb-4">Qualité et fraîcheur garanties</h2>
+          <p className="text-muted-foreground mb-8">
+            Consom Supermarché s'engage à offrir des produits de qualité 
+            et un service exceptionnel à tous nos clients. Depuis plus de 15 ans, 
+            nous sélectionnons avec soin chaque produit pour garantir fraîcheur et qualité.
           </p>
-          <Button variant="consom" size="lg" asChild>
-            <Link to="/about">Découvrir Notre Histoire</Link>
-          </Button>
+          <Link to="/about">
+            <Button variant="blue" size="lg">
+              En savoir plus <ArrowRight className="ml-2" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

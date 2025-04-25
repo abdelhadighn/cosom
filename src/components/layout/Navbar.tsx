@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -8,18 +9,18 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white shadow-sm">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2 mr-auto">
           <img 
-            src="/images/logo.png" 
+            src="/lovable-uploads/076e2cdb-9f87-4c2d-858c-01132912bd96.png" 
             alt="Consom Supermarché" 
             className="h-12 md:h-14"
           />
         </Link>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-6 mx-auto">
           <Link to="/" className="text-base font-medium text-foreground hover:text-consom">
             Accueil
           </Link>
@@ -38,7 +39,7 @@ export function Navbar() {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="md:hidden" 
+          className="md:hidden ml-auto" 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           {isMenuOpen ? (
