@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
@@ -6,8 +7,8 @@ import { Hero } from "@/components/Hero";
 import { ProductCard } from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-import { Search } from "@/components/ui/Search";
-import { Input } from "@/components/ui/Input";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface Product {
   id: string;
