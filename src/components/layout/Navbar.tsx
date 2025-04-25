@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -11,7 +10,7 @@ export function Navbar() {
     <header className="sticky top-0 z-40 w-full bg-white shadow-sm">
       <div className="container flex h-16 items-center">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 mr-auto">
+        <Link to="/" className="flex items-center gap-2">
           <img 
             src="/lovable-uploads/076e2cdb-9f87-4c2d-858c-01132912bd96.png" 
             alt="Consom Supermarché" 
@@ -20,7 +19,7 @@ export function Navbar() {
         </Link>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6 mx-auto">
+        <nav className="hidden md:flex items-center gap-6 mx-auto -ml-12">
           <Link to="/" className="text-base font-medium text-foreground hover:text-consom">
             Accueil
           </Link>

@@ -1,51 +1,42 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/Hero";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 export default function Promotions() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [promotions] = useState([
-    {
-      id: 1,
-      title: "Remise de 20% sur les fruits frais",
-      description: "Profitez d'une réduction de 20% sur tous les fruits frais jusqu'à ce dimanche.",
-      image: "/placeholder.svg",
-      discountPercentage: 20,
-      validUntil: "2023-08-30",
-    },
-    {
-      id: 2,
-      title: "2 pour le prix d'1 sur les produits laitiers",
-      description: "Achetez un produit laitier et obtenez-en un second gratuitement.",
-      image: "/placeholder.svg",
-      discountPercentage: 50,
-      validUntil: "2023-08-25",
-    },
-    {
-      id: 3,
-      title: "30% de remise sur les céréales",
-      description: "Réduction exceptionnelle sur toutes nos céréales de marque.",
-      image: "/placeholder.svg",
-      discountPercentage: 30,
-      validUntil: "2023-09-05",
-    },
-    {
-      id: 4,
-      title: "Réduction sur les produits ménagers",
-      description: "15% de réduction sur tous les produits d'entretien de la maison.",
-      image: "/placeholder.svg",
-      discountPercentage: 15,
-      validUntil: "2023-09-10",
+  const [promotions, setPromotions] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchPromotedProducts();
+  }, []);
+
+  const fetchPromotedProducts = async () => {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('is_promoted', true);
+
+    if (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les promotions",
+        variant: "destructive",
+      });
+      return;
     }
-  ]);
+
+    setPromotions(data || []);
+  };
 
   const filteredPromotions = promotions.filter(promo => 
-    promo.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    promo.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     promo.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -89,20 +80,18 @@ export default function Promotions() {
                   <div key={promotion.id} className="bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="relative">
                       <img 
-                        src={promotion.image} 
-                        alt={promotion.title} 
+                        src={promotion.image_url} 
+                        alt={promotion.name} 
                         className="w-full h-48 object-cover"
                       />
                       <div className="absolute top-2 right-2 bg-consom text-white font-bold px-2 py-1 rounded-md">
-                        -{promotion.discountPercentage}%
+                        Promotion
                       </div>
                     </div>
                     <div className="p-4">
-                      <h3 className="font-bold text-lg mb-2">{promotion.title}</h3>
+                      <h3 className="font-bold text-lg mb-2">{promotion.name}</h3>
                       <p className="text-gray-600 text-sm mb-3">{promotion.description}</p>
-                      <p className="text-sm text-gray-500">
-                        Valable jusqu'au {new Date(promotion.validUntil).toLocaleDateString('fr-FR')}
-                      </p>
+                      <p className="text-lg font-bold text-consom">{promotion.price} DH</p>
                       <Button variant="blue" className="mt-3 w-full">
                         En profiter
                       </Button>
