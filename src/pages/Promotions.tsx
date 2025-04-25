@@ -58,7 +58,7 @@ export default function Promotions() {
           title="Promotions en Cours"
           description="Découvrez nos offres spéciales et économisez sur vos produits préférés"
           buttonText="Voir tous les produits"
-          buttonLink="/products"
+          buttonUrl="/products"
         />
         
         <section className="py-12 bg-secondary">
