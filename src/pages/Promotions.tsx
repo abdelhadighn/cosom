@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/Hero";
+import { ProductCard } from "@/components/ProductCard";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -54,49 +54,24 @@ export default function Promotions() {
         
         <section className="py-12 bg-secondary">
           <div className="container">
-            <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 mb-8">
-              <div className="relative flex-1">
-                <Input
-                  type="search"
-                  placeholder="Rechercher des promotions..."
-                  className="pl-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              </div>
-              <Button 
-                variant="blue" 
-                onClick={() => setSearchQuery("")}
-                className="md:w-auto"
-              >
-                Réinitialiser
-              </Button>
+            <div className="relative w-full max-w-md mx-auto mb-8">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                type="search"
+                placeholder="Rechercher des promotions..."
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
             
             {filteredPromotions.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredPromotions.map((promotion) => (
-                  <div key={promotion.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div className="relative">
-                      <img 
-                        src={promotion.image_url} 
-                        alt={promotion.name} 
-                        className="w-full h-48 object-cover"
-                      />
-                      <div className="absolute top-2 right-2 bg-consom text-white font-bold px-2 py-1 rounded-md">
-                        Promotion
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-lg mb-2">{promotion.name}</h3>
-                      <p className="text-gray-600 text-sm mb-3">{promotion.description}</p>
-                      <p className="text-lg font-bold text-consom">{promotion.price} DH</p>
-                      <Button variant="blue" className="mt-3 w-full">
-                        En profiter
-                      </Button>
-                    </div>
-                  </div>
+                {filteredPromotions.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    {...product}
+                  />
                 ))}
               </div>
             ) : (

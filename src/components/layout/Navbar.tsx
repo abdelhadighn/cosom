@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -19,7 +20,7 @@ export function Navbar() {
         </Link>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6 mx-auto -ml-12">
+        <nav className="hidden md:flex items-center gap-6 mx-auto">
           <Link to="/" className="text-base font-medium text-foreground hover:text-consom">
             Accueil
           </Link>
@@ -33,6 +34,9 @@ export function Navbar() {
             Promotions
           </Link>
         </nav>
+        
+        {/* Empty div for balance */}
+        <div className="hidden md:block w-[120px]" /> {/* Width matches logo */}
         
         {/* Mobile menu button */}
         <Button 
