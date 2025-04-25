@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
-import { Search } from "@/components/ui/search";
+import { Search } from "lucide-react";
 
 export function CategoriesManagement() {
   const [categories, setCategories] = useState<any[]>([]);

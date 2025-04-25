@@ -4,7 +4,9 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/Hero";
 import { ProductCard } from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, Input, Button } from "@/components/ui";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function Promotions() {
   const [promotedProducts, setPromotedProducts] = useState<any[]>([]);
