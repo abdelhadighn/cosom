@@ -1,15 +1,16 @@
-
 import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/Hero";
 import { ProductCard } from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
+import { Search, Input, Button } from "@/components/ui";
 
 export default function Promotions() {
   const [promotedProducts, setPromotedProducts] = useState<any[]>([]);
   const [productOfMonth, setProductOfMonth] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchPromotedProducts();
@@ -46,6 +47,11 @@ export default function Promotions() {
     }
   };
 
+  const filteredProducts = promotedProducts.filter(product => 
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.brand?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       <Navbar />
@@ -58,7 +64,23 @@ export default function Promotions() {
           buttonUrl="/products"
         />
 
-        {/* Product of the Month */}
+        <section className="py-8 bg-white border-b">
+          <div className="container">
+            <div className="max-w-md mx-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Rechercher un produit..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
         {productOfMonth && (
           <section className="py-16 bg-white">
             <div className="container">
@@ -90,7 +112,6 @@ export default function Promotions() {
           </section>
         )}
 
-        {/* Current Promotions */}
         <section className="py-16 bg-gray-50">
           <div className="container">
             <h2 className="text-3xl font-bold text-center mb-4">Offres Spéciales</h2>
@@ -102,9 +123,9 @@ export default function Promotions() {
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-consom mx-auto"></div>
               </div>
-            ) : promotedProducts.length > 0 ? (
+            ) : filteredProducts.length > 0 ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {promotedProducts.map(product => (
+                {filteredProducts.map(product => (
                   <ProductCard
                     key={product.id}
                     {...product}
@@ -114,17 +135,23 @@ export default function Promotions() {
             ) : (
               <div className="text-center py-12">
                 <h3 className="text-xl font-medium text-gray-700 mb-2">
-                  Aucune promotion en cours
+                  Aucun produit trouvé
                 </h3>
                 <p className="text-gray-500">
-                  Revenez bientôt pour découvrir nos nouvelles offres.
+                  Essayez d'autres termes de recherche
                 </p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4 text-gray-700" 
+                  onClick={() => setSearchTerm("")}
+                >
+                  Réinitialiser la recherche
+                </Button>
               </div>
             )}
           </div>
         </section>
 
-        {/* Promotion Info */}
         <section className="py-16 bg-white">
           <div className="container">
             <div className="bg-consom/10 rounded-lg p-8 border border-consom/20">

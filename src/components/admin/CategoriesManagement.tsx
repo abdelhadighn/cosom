@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
+import { Search } from "@/components/ui/search";
 
 export function CategoriesManagement() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -136,6 +138,10 @@ export function CategoriesManagement() {
     setLoading(false);
   };
 
+  const filteredCategories = categories.filter(category =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow">
@@ -198,9 +204,23 @@ export function CategoriesManagement() {
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-6">Liste des catégories</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Liste des catégories</h2>
+          <div className="max-w-xs w-full">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Rechercher une catégorie..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+        </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map((category) => (
+          {filteredCategories.map((category) => (
             <div key={category.id} className="border p-4 rounded-lg">
               <img 
                 src={category.image_url} 
