@@ -17,36 +17,32 @@ export function AdminNav({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <img 
-              src="/lovable-uploads/b4315c86-97b2-4be4-8311-485eb9d9c1da.png" 
+              src="/lovable-uploads/076e2cdb-9f87-4c2d-858c-01132912bd96.png" 
               alt="Consom Supermarché" 
-              className="h-8"
+              className="h-12 md:h-14"
             />
             <div className="hidden md:flex space-x-2">
               <Button
-                variant="blue"
+                variant={activeSection === 'products' ? 'consom' : 'consomOutline'}
                 onClick={() => setActiveSection('products')}
-                className={activeSection === 'products' ? "bg-[#1EAEDB]" : ""}
               >
                 Produits
               </Button>
               <Button
-                variant="blue"
+                variant={activeSection === 'categories' ? 'consom' : 'consomOutline'}
                 onClick={() => setActiveSection('categories')}
-                className={activeSection === 'categories' ? "bg-[#1EAEDB]" : ""}
               >
                 Catégories
               </Button>
               <Button
-                variant="blue"
+                variant={activeSection === 'promotions' ? 'consom' : 'consomOutline'}
                 onClick={() => setActiveSection('promotions')}
-                className={activeSection === 'promotions' ? "bg-[#1EAEDB]" : ""}
               >
                 Promotions
               </Button>
               <Button
-                variant="blue"
+                variant={activeSection === 'messages' ? 'consom' : 'consomOutline'}
                 onClick={() => setActiveSection('messages')}
-                className={activeSection === 'messages' ? "bg-[#1EAEDB]" : ""}
               >
                 Messages
                 <MessageSquare className="ml-2 h-4 w-4" />
