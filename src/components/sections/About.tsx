@@ -8,7 +8,7 @@ export function About() {
       <div className="container">
         <div className="text-center max-w-2xl mx-auto">
           <img 
-            src="/lovable-uploads/b4315c86-97b2-4be4-8311-485eb9d9c1da.png" 
+            src="/images/logo-dark.png" 
             alt="Consom Supermarché" 
             className="h-12 mb-6 mx-auto"
           />

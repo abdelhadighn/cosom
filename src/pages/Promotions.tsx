@@ -59,7 +59,7 @@ export default function Promotions() {
       <Navbar />
       <main>
         <Hero 
-          image="/lovable-uploads/071e5ffc-6682-4cb8-b028-b4409fc418e3.png"
+          image="/images/promotions-bg.png"
           title="Promotions en Cours"
           description="Découvrez nos offres spéciales et économisez sur vos produits préférés"
           buttonText="Voir tous les produits"

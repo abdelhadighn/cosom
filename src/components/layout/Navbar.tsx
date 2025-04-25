@@ -12,7 +12,7 @@ export function Navbar() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img 
-            src="/lovable-uploads/076e2cdb-9f87-4c2d-858c-01132912bd96.png" 
+            src="/images/logo.png" 
             alt="Consom Supermarché" 
             className="h-12 md:h-14"
           />
