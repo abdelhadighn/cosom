@@ -32,7 +32,7 @@ export function Hero({
       <div className="container relative z-10 flex flex-col items-center text-center text-white">
         <h1 className="text-4xl md:text-5xl font-bold mb-6">{title}</h1>
         <p className="text-xl md:text-2xl max-w-xl mb-8">{description}</p>
-        <Button variant="consom" size="xl" asChild>
+        <Button variant="consom" size="xl" asChild className="text-white">
           <Link to={buttonUrl}>{buttonText}</Link>
         </Button>
       </div>

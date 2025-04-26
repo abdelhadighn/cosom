@@ -7,6 +7,8 @@ import { Categories } from "@/components/sections/Categories";
 import { Promotions } from "@/components/sections/Promotions";
 import { FeaturedProducts } from "@/components/sections/FeaturedProducts";
 import { About } from "@/components/sections/About";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export default function Index() {
   return (
