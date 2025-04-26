@@ -17,7 +17,7 @@ export function Promotions() {
             <p className="text-white/90 text-lg mb-6">
               Découvrez notre sélection de produits à prix réduits. Offres valables jusqu'à épuisement des stocks.
             </p>
-            <Button variant="consomOutline" className="text-white hover:bg-white hover:text-consom" asChild>
+            <Button variant="outline" className="text-white border-white hover:bg-white hover:text-consom" asChild>
               <Link to="/promotions">Voir les promotions</Link>
             </Button>
           </div>
