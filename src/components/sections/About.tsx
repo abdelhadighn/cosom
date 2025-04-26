@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -19,9 +18,9 @@ export function About() {
             et un service exceptionnel à tous nos clients. Depuis plus de 15 ans, 
             nous sélectionnons avec soin chaque produit pour garantir fraîcheur et qualité.
           </p>
-          <Link to="/about">
-            <Button variant="blue" size="lg">
-              En savoir plus <ArrowRight className="ml-2" />
+          <Link to="/products">
+            <Button variant="consomOutline" size="lg" className="text-white border-white hover:bg-white hover:text-consom">
+              Explorer le catalogue <ArrowRight className="ml-2" />
             </Button>
           </Link>
         </div>
