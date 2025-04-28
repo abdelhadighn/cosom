@@ -1,11 +1,8 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
-
 export function Promotions() {
-  return (
-    <section className="py-16 bg-white">
+  return <section className="py-16 bg-white">
       <div className="container">
         <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-consom to-consom-dark p-8 md:p-12">
           <div className="absolute top-0 right-0 w-1/3 h-full opacity-10">
@@ -18,11 +15,10 @@ export function Promotions() {
               Découvrez notre sélection de produits à prix réduits. Offres valables jusqu'à épuisement des stocks.
             </p>
             <Button variant="outline" className="text-white border-white hover:bg-white hover:text-consom" asChild>
-              <Link to="/promotions">Voir les promotions</Link>
+              <Link to="/promotions" className="change background to orange like parent and add border white ">Voir les promotions</Link>
             </Button>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
