@@ -1,11 +1,16 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white shadow-sm">
@@ -21,16 +26,28 @@ export function Navbar() {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6 mx-auto">
-          <Link to="/" className="text-base font-medium text-foreground hover:text-consom">
+          <Link 
+            to="/" 
+            className={`text-base font-medium transition-colors ${isActive('/') ? 'text-consom' : 'text-foreground hover:text-consom'}`}
+          >
             Accueil
           </Link>
-          <Link to="/about" className="text-base font-medium text-foreground hover:text-consom">
+          <Link 
+            to="/about" 
+            className={`text-base font-medium transition-colors ${isActive('/about') ? 'text-consom' : 'text-foreground hover:text-consom'}`}
+          >
             À propos
           </Link>
-          <Link to="/products" className="text-base font-medium text-foreground hover:text-consom">
+          <Link 
+            to="/products" 
+            className={`text-base font-medium transition-colors ${isActive('/products') ? 'text-consom' : 'text-foreground hover:text-consom'}`}
+          >
             Produits
           </Link>
-          <Link to="/promotions" className="text-base font-medium text-foreground hover:text-consom">
+          <Link 
+            to="/promotions" 
+            className={`text-base font-medium transition-colors ${isActive('/promotions') ? 'text-consom' : 'text-foreground hover:text-consom'}`}
+          >
             Promotions
           </Link>
         </nav>
@@ -60,28 +77,28 @@ export function Navbar() {
           <nav className="flex flex-col space-y-4 p-4">
             <Link 
               to="/" 
-              className="text-base font-medium px-4 py-2 hover:bg-secondary rounded-md"
+              className={`text-base font-medium px-4 py-2 rounded-md ${isActive('/') ? 'bg-consom/10 text-consom' : 'hover:bg-secondary'}`}
               onClick={() => setIsMenuOpen(false)}
             >
               Accueil
             </Link>
             <Link 
               to="/about" 
-              className="text-base font-medium px-4 py-2 hover:bg-secondary rounded-md"
+              className={`text-base font-medium px-4 py-2 rounded-md ${isActive('/about') ? 'bg-consom/10 text-consom' : 'hover:bg-secondary'}`}
               onClick={() => setIsMenuOpen(false)}
             >
               À propos
             </Link>
             <Link 
               to="/products" 
-              className="text-base font-medium px-4 py-2 hover:bg-secondary rounded-md"
+              className={`text-base font-medium px-4 py-2 rounded-md ${isActive('/products') ? 'bg-consom/10 text-consom' : 'hover:bg-secondary'}`}
               onClick={() => setIsMenuOpen(false)}
             >
               Produits
             </Link>
             <Link 
               to="/promotions" 
-              className="text-base font-medium px-4 py-2 hover:bg-secondary rounded-md"
+              className={`text-base font-medium px-4 py-2 rounded-md ${isActive('/promotions') ? 'bg-consom/10 text-consom' : 'hover:bg-secondary'}`}
               onClick={() => setIsMenuOpen(false)}
             >
               Promotions
