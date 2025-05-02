@@ -21,16 +21,22 @@ interface Product {
   is_promoted: boolean;
 }
 
+interface Category {
+  id: string;
+  name: string;
+  image_url: string;
+}
+
 export default function ProductCategory() {
   const { category } = useParams<{ category: string }>();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [categoryName, setCategoryName] = useState("");
+  const [categoryData, setCategoryData] = useState<Category | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     if (category) {
-      fetchCategoryName();
+      fetchCategory();
       fetchProducts();
     }
   }, [category]);
@@ -89,30 +95,30 @@ export default function ProductCategory() {
     setLoading(false);
   };
 
-  const fetchCategoryName = async () => {
-    console.log("Fetching category name for slug:", category);
+  const fetchCategory = async () => {
+    console.log("Fetching category data for slug:", category);
     
     const { data, error } = await supabase
       .from('categories')
-      .select('name')
+      .select('name, image_url, id')
       .eq('slug', category)
       .maybeSingle();
 
     if (error) {
-      console.error("Error fetching category name:", error);
+      console.error("Error fetching category data:", error);
       toast({
         title: "Erreur",
-        description: "Impossible de charger le nom de la catégorie",
+        description: "Impossible de charger les données de la catégorie",
         variant: "destructive",
       });
     }
     
     if (data) {
-      console.log("Category name found:", data.name);
-      setCategoryName(data.name);
+      console.log("Category data found:", data);
+      setCategoryData(data);
     } else {
-      console.log("No category name found");
-      setCategoryName("");
+      console.log("No category data found");
+      setCategoryData(null);
     }
   };
 
@@ -126,8 +132,8 @@ export default function ProductCategory() {
       <Navbar />
       <main>
         <Hero 
-          image="/lovable-uploads/3b91bcdc-2342-4e1c-b170-5bb9ecddfb49.png"
-          title={categoryName ? `Nos ${categoryName}` : "Catégorie"}
+          image={categoryData?.image_url || "/lovable-uploads/3b91bcdc-2342-4e1c-b170-5bb9ecddfb49.png"}
+          title={categoryData?.name ? `Nos ${categoryData.name}` : "Catégorie"}
           description="Découvrez notre sélection de produits de qualité"
           overlay={true}
         />
