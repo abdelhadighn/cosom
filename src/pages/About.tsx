@@ -165,7 +165,7 @@ export default function About() {
             <p className="text-xl max-w-2xl mx-auto mb-8">
               Parcourez notre vaste sélection de produits frais et de qualité pour tous vos besoins quotidiens.
             </p>
-            <Button variant="outline" className="text-white border-white hover:bg-white hover:text-consom" size="lg" asChild>
+            <Button variant="outline" className="text-consom border-white hover:bg-transparent hover:text-white" size="lg" asChild>
               <Link to="/products">
                 Explorer le catalogue
                 <ArrowRight className="ml-2 h-5 w-5" />

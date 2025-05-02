@@ -19,7 +19,7 @@ export function About() {
             nous sélectionnons avec soin chaque produit pour garantir fraîcheur et qualité.
           </p>
           <Link to="/products">
-            <Button variant="consomOutline" size="lg" className="text-white border-white hover:bg-white hover:text-consom">
+            <Button variant="consomOutline" size="lg" className="text-consom border-white hover:bg-transparent hover:text-white">
               Explorer le catalogue <ArrowRight className="ml-2" />
             </Button>
           </Link>
