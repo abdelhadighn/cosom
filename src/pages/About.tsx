@@ -143,14 +143,15 @@ export default function About() {
               </div>
 
               <div className="md:col-span-3 rounded-lg overflow-hidden h-[400px]">
-                {/* Embed a map here - using a placeholder for now */}
+                {/* Updated map iframe with Consom location */}
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83998.95410942551!2d2.2769953554997236!3d48.858833639324!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e1f06e2b70f%3A0x40b82c3688c9460!2sParis%2C%20France!5e0!3m2!1sfr!2sfr!4v1632901552755!5m2!1sfr!2sfr" 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.926971294389!2d-1.341939!3d34.883180100000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd78c9005530f875%3A0xbb8c8465fd3d6736!2sConsom!5e0!3m2!1sfr!2sdz!4v1746219646933!5m2!1sfr!2sdz" 
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 
                   allowFullScreen 
                   loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
                   title="Consom Supermarché Location"
                 ></iframe>
               </div>
