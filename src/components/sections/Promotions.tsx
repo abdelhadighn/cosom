@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
@@ -15,7 +16,7 @@ export function Promotions() {
               Découvrez notre sélection de produits à prix réduits. Offres valables jusqu'à épuisement des stocks.
             </p>
             <Button variant="outline" className="text-white border-white hover:bg-white hover:text-consom" asChild>
-              <Link to="/promotions" className="change background to orange like parent and add border white ">Voir les promotions</Link>
+              <Link to="/promotions">Voir les promotions</Link>
             </Button>
           </div>
         </div>
