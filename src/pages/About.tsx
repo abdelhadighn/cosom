@@ -105,7 +105,7 @@ export default function About() {
                     <MapPin className="h-6 w-6 text-consom mr-3 mt-0.5" />
                     <div>
                       <h3 className="font-medium mb-1">Adresse</h3>
-                      <p className="text-gray-600">123 Rue du Commerce<br />75000 Paris, France</p>
+                      <p className="text-gray-600">Boulevard 18 février imama, Mansourah, Algeria</p>
                     </div>
                   </div>
 
@@ -121,7 +121,7 @@ export default function About() {
                     <Mail className="h-6 w-6 text-consom mr-3 mt-0.5" />
                     <div>
                       <h3 className="font-medium mb-1">Email</h3>
-                      <p className="text-gray-600">contact@consom.fr</p>
+                      <p className="text-gray-600">contact@mansourah-consom.com</p>
                     </div>
                   </div>
 
@@ -130,8 +130,8 @@ export default function About() {
                     <div>
                       <h3 className="font-medium mb-1">Horaires d'ouverture</h3>
                       <p className="text-gray-600">
-                        Lundi - Samedi: 8h00 - 20h00<br />
-                        Dimanche: 9h00 - 18h00
+                        Tous les jours 7/7 
+                        8:30 - 21:30
                       </p>
                     </div>
                   </div>
