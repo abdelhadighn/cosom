@@ -25,7 +25,7 @@ export default function Dashboard() {
           description: "Veuillez vous connecter pour accéder à cette page",
           variant: "destructive"
         });
-        navigate("/admin");
+        navigate("/gestion");
       }
       
       setLoading(false);
@@ -35,7 +35,7 @@ export default function Dashboard() {
     
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || !session) {
-        navigate("/admin");
+        navigate("/gestion");
       }
     });
     
@@ -50,7 +50,7 @@ export default function Dashboard() {
       title: "Déconnexion réussie",
       description: "Vous avez été déconnecté"
     });
-    navigate("/admin");
+    navigate("/gestion");
   };
 
   if (loading) {

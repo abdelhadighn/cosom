@@ -30,8 +30,8 @@ const App = () => {
             <Route path="/products" element={<Products />} />
             <Route path="/products/:category" element={<ProductCategory />} />
             <Route path="/promotions" element={<Promotions />} />
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/gestion" element={<AdminLogin />} />
+            <Route path="/gestion/dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

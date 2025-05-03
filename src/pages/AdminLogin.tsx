@@ -42,7 +42,7 @@ export default function AdminLogin() {
           title: "Connexion réussie",
           description: "Bienvenue dans votre espace administrateur"
         });
-        navigate("/admin/dashboard");
+        navigate("/gestion/dashboard");
       }
     } catch (error: any) {
       console.error("Login error:", error);
