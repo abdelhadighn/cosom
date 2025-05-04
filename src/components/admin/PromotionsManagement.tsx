@@ -5,11 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export function PromotionsManagement() {
   const [products, setProducts] = useState<any[]>([]);
   const [promotedProducts, setPromotedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isPromotionDialogOpen, setIsPromotionDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [newPrice, setNewPrice] = useState("");
 
   useEffect(() => {
     fetchProducts();
@@ -44,11 +54,23 @@ export function PromotionsManagement() {
     setLoading(false);
   };
 
-  const togglePromotion = async (productId: string, currentlyPromoted: boolean) => {
+  const openPromotionDialog = (product: any) => {
+    setSelectedProduct(product);
+    setNewPrice(product.promotional_price || product.price);
+    setIsPromotionDialogOpen(true);
+  };
+
+  const handlePromotionSubmit = async () => {
+    if (!selectedProduct) return;
+    
     const { error } = await supabase
       .from('products')
-      .update({ is_promoted: !currentlyPromoted })
-      .eq('id', productId);
+      .update({ 
+        is_promoted: true, 
+        promotional_price: newPrice,
+        original_price: selectedProduct.original_price || selectedProduct.price
+      })
+      .eq('id', selectedProduct.id);
 
     if (error) {
       toast({
@@ -59,9 +81,43 @@ export function PromotionsManagement() {
     } else {
       toast({
         title: "Succès",
-        description: `Produit ${currentlyPromoted ? 'retiré des' : 'ajouté aux'} promotions`
+        description: `Produit ajouté aux promotions avec le nouveau prix`
       });
+      setIsPromotionDialogOpen(false);
       fetchProducts();
+    }
+  };
+
+  const togglePromotion = async (productId: string, currentlyPromoted: boolean) => {
+    if (currentlyPromoted) {
+      // Remove from promotions
+      const { error } = await supabase
+        .from('products')
+        .update({ 
+          is_promoted: false,
+          promotional_price: null
+        })
+        .eq('id', productId);
+
+      if (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de modifier la promotion",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Succès",
+          description: `Produit retiré des promotions`
+        });
+        fetchProducts();
+      }
+    } else {
+      // Find the product to promote
+      const product = products.find(p => p.id === productId);
+      if (product) {
+        openPromotionDialog(product);
+      }
     }
   };
 
@@ -78,7 +134,16 @@ export function PromotionsManagement() {
                 className="w-full h-48 object-cover rounded mb-4"
               />
               <h3 className="font-bold">{product.name}</h3>
-              <p className="text-lg font-semibold mt-2">{product.price}</p>
+              <div className="mt-2">
+                {product.is_promoted && product.promotional_price ? (
+                  <>
+                    <p className="text-red-500 line-through">{product.original_price} DA</p>
+                    <p className="text-green-600 font-semibold">{product.promotional_price} DA</p>
+                  </>
+                ) : (
+                  <p className="text-lg font-semibold">{product.price} DA</p>
+                )}
+              </div>
               <div className="mt-4 flex justify-end">
                 <Button 
                   variant={product.is_promoted ? "outline" : "consom"}
@@ -103,8 +168,23 @@ export function PromotionsManagement() {
                 className="w-full h-48 object-cover rounded mb-4"
               />
               <h3 className="font-bold">{product.name}</h3>
-              <p className="text-lg font-semibold mt-2">{product.price}</p>
-              <div className="mt-4 flex justify-end">
+              <div className="mt-2">
+                {product.promotional_price ? (
+                  <>
+                    <p className="text-red-500 line-through">{product.original_price || product.price} DA</p>
+                    <p className="text-green-600 font-semibold">{product.promotional_price} DA</p>
+                  </>
+                ) : (
+                  <p className="text-lg font-semibold">{product.price} DA</p>
+                )}
+              </div>
+              <div className="mt-4 flex justify-end space-x-2">
+                <Button 
+                  variant="outline"
+                  onClick={() => openPromotionDialog(product)}
+                >
+                  Modifier le prix
+                </Button>
                 <Button 
                   variant="outline"
                   onClick={() => togglePromotion(product.id, true)}
@@ -121,6 +201,42 @@ export function PromotionsManagement() {
           )}
         </div>
       </div>
+
+      {/* Promotion Dialog */}
+      <Dialog open={isPromotionDialogOpen} onOpenChange={setIsPromotionDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Définir le prix promotionnel</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="original-price">Prix original</Label>
+              <Input
+                id="original-price"
+                value={selectedProduct?.original_price || selectedProduct?.price}
+                disabled
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-price">Nouveau prix</Label>
+              <Input
+                id="new-price"
+                value={newPrice}
+                onChange={(e) => setNewPrice(e.target.value)}
+                placeholder="Entrez le nouveau prix"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsPromotionDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handlePromotionSubmit}>
+              Confirmer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -15,6 +15,8 @@ interface ProductCardProps {
   price?: string;
   isPromoted?: boolean;
   is_promoted?: boolean;
+  promotional_price?: string;
+  original_price?: string;
 }
 
 export function ProductCard({ 
@@ -25,7 +27,9 @@ export function ProductCard({
   brand, 
   price, 
   isPromoted = false,
-  is_promoted = false
+  is_promoted = false,
+  promotional_price,
+  original_price
 }: ProductCardProps) {
   // Use either is_promoted or isPromoted, whichever is available
   const promoted = isPromoted || is_promoted;
@@ -59,8 +63,13 @@ export function ProductCard({
           <h3 className="font-medium text-base mt-1">{name}</h3>
           <p className="text-gray-600 text-sm mt-2 line-clamp-2">{description}</p>
           
-          {price && (
-            <p className="font-medium mt-4">{price} DA</p>
+          {promoted && promotional_price ? (
+            <div className="mt-4">
+              <p className="text-red-500 line-through text-sm">{original_price || price} DA</p>
+              <p className="text-green-600 font-medium">{promotional_price} DA</p>
+            </div>
+          ) : (
+            price && <p className="font-medium mt-4">{price} DA</p>
           )}
         </div>
       </div>
@@ -81,8 +90,13 @@ export function ProductCard({
             </div>
             <div className="space-y-2">
               <p className="text-gray-700">{description}</p>
-              {price && (
-                <p className="text-lg font-semibold text-consom mt-2">{price} DA</p>
+              {promoted && promotional_price ? (
+                <div className="mt-4">
+                  <p className="text-red-500 line-through">{original_price || price} DA</p>
+                  <p className="text-green-600 font-semibold text-lg">{promotional_price} DA</p>
+                </div>
+              ) : (
+                price && <p className="text-lg font-semibold text-consom mt-2">{price} DA</p>
               )}
               {promoted && (
                 <div className="text-sm mt-2 bg-consom/10 text-consom inline-block px-3 py-1 rounded-full">

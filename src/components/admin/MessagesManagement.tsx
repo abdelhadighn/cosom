@@ -70,6 +70,29 @@ export function MessagesManagement() {
     }
   };
 
+  const deleteMessage = async (id: string) => {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce message ?")) {
+      const { error } = await supabase
+        .from('messages')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de supprimer le message",
+          variant: "destructive"
+        });
+      } else {
+        fetchMessages();
+        toast({
+          title: "Succès",
+          description: "Message supprimé avec succès"
+        });
+      }
+    }
+  };
+
   const filteredMessages = messages.filter(message =>
     message.message.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -102,6 +125,7 @@ export function MessagesManagement() {
                 key={message.id}
                 message={message}
                 onMarkAsRead={markAsRead}
+                onDelete={deleteMessage}
               />
             ))}
             {filteredMessages.length === 0 && (
