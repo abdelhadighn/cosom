@@ -23,6 +23,7 @@ export function MessagesManagement() {
   }, [dateRange]);
 
   const fetchMessages = async () => {
+    setLoading(true);
     let query = supabase
       .from('messages')
       .select('*')
@@ -71,25 +72,26 @@ export function MessagesManagement() {
   };
 
   const deleteMessage = async (id: string) => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce message ?")) {
-      const { error } = await supabase
-        .from('messages')
-        .delete()
-        .eq('id', id);
+    // Remove confirmation dialog as it may be causing issues
+    const { error } = await supabase
+      .from('messages')
+      .delete()
+      .eq('id', id);
 
-      if (error) {
-        toast({
-          title: "Erreur",
-          description: "Impossible de supprimer le message",
-          variant: "destructive"
-        });
-      } else {
-        fetchMessages();
-        toast({
-          title: "Succès",
-          description: "Message supprimé avec succès"
-        });
-      }
+    if (error) {
+      console.error("Delete error:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer le message",
+        variant: "destructive"
+      });
+    } else {
+      // Update the local state to immediately remove the message
+      setMessages(messages.filter(msg => msg.id !== id));
+      toast({
+        title: "Succès",
+        description: "Message supprimé avec succès"
+      });
     }
   };
 

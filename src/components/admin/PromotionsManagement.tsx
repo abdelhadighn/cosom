@@ -63,54 +63,77 @@ export function PromotionsManagement() {
   const handlePromotionSubmit = async () => {
     if (!selectedProduct) return;
     
-    const { error } = await supabase
-      .from('products')
-      .update({ 
-        is_promoted: true, 
-        promotional_price: newPrice,
-        original_price: selectedProduct.original_price || selectedProduct.price
-      })
-      .eq('id', selectedProduct.id);
+    try {
+      // Make sure we have the original price stored
+      const originalPrice = selectedProduct.original_price || selectedProduct.price;
+      
+      const { error } = await supabase
+        .from('products')
+        .update({ 
+          is_promoted: true, 
+          promotional_price: newPrice,
+          original_price: originalPrice
+        })
+        .eq('id', selectedProduct.id);
 
-    if (error) {
+      if (error) {
+        console.error("Update promotion error:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de modifier la promotion: " + error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Succès",
+          description: `Prix promotionnel mis à jour avec succès`
+        });
+        setIsPromotionDialogOpen(false);
+        await fetchProducts(); // Refresh data after update
+      }
+    } catch (err: any) {
+      console.error("Unexpected error:", err);
       toast({
         title: "Erreur",
-        description: "Impossible de modifier la promotion",
+        description: "Une erreur s'est produite: " + err.message,
         variant: "destructive"
       });
-    } else {
-      toast({
-        title: "Succès",
-        description: `Produit ajouté aux promotions avec le nouveau prix`
-      });
-      setIsPromotionDialogOpen(false);
-      fetchProducts();
     }
   };
 
   const togglePromotion = async (productId: string, currentlyPromoted: boolean) => {
     if (currentlyPromoted) {
       // Remove from promotions
-      const { error } = await supabase
-        .from('products')
-        .update({ 
-          is_promoted: false,
-          promotional_price: null
-        })
-        .eq('id', productId);
+      try {
+        const { error } = await supabase
+          .from('products')
+          .update({ 
+            is_promoted: false,
+            promotional_price: null
+          })
+          .eq('id', productId);
 
-      if (error) {
+        if (error) {
+          console.error("Remove promotion error:", error);
+          toast({
+            title: "Erreur",
+            description: "Impossible de modifier la promotion: " + error.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Succès",
+            description: `Produit retiré des promotions`
+          });
+          await fetchProducts(); // Refresh data after update
+        }
+      } catch (err: any) {
+        console.error("Unexpected error:", err);
         toast({
           title: "Erreur",
-          description: "Impossible de modifier la promotion",
+          description: "Une erreur s'est produite: " + err.message,
           variant: "destructive"
         });
-      } else {
-        toast({
-          title: "Succès",
-          description: `Produit retiré des promotions`
-        });
-        fetchProducts();
       }
     } else {
       // Find the product to promote
@@ -121,6 +144,7 @@ export function PromotionsManagement() {
     }
   };
 
+  // Update the ProductCard component too to ensure consistency
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow">

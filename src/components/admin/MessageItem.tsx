@@ -21,22 +21,10 @@ export function MessageItem({ message, onMarkAsRead, onDelete }: MessageItemProp
           <p className="text-gray-700">{message.message}</p>
         </div>
         <div className="flex gap-2 ml-4">
-          {!message.read && (
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => onMarkAsRead(message.id)}
-            >
-              Marquer comme lu
-            </Button>
-          )}
           <Button 
             variant="destructive" 
             size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(message.id);
-            }}
+            onClick={() => onDelete(message.id)}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
