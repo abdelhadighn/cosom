@@ -161,7 +161,7 @@ export function PromotionsManagement() {
               <div className="mt-2">
                 {product.is_promoted && product.promotional_price ? (
                   <>
-                    <p className="text-red-500 line-through">{product.original_price} DA</p>
+                    <p className="text-red-500 line-through">{product.original_price || product.price} DA</p>
                     <p className="text-green-600 font-semibold">{product.promotional_price} DA</p>
                   </>
                 ) : (

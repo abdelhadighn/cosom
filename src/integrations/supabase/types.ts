@@ -129,6 +129,7 @@ export type Database = {
           image_url: string
           is_promoted: boolean
           name: string
+          original_price: string | null
           price: string
           updated_at: string
         }
@@ -141,6 +142,7 @@ export type Database = {
           image_url: string
           is_promoted?: boolean
           name: string
+          original_price?: string | null
           price: string
           updated_at?: string
         }
@@ -153,6 +155,7 @@ export type Database = {
           image_url?: string
           is_promoted?: boolean
           name?: string
+          original_price?: string | null
           price?: string
           updated_at?: string
         }
