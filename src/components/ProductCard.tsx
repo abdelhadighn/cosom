@@ -34,9 +34,7 @@ export function ProductCard({
   const promoted = isPromoted || is_promoted;
   // Use either image or image_url, whichever is available
   const imageSource = image || image_url;
-  // Use original_price if available, fallback to price
-  const displayOriginalPrice = original_price || price;
-
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   return (
@@ -66,7 +64,7 @@ export function ProductCard({
           
           {promoted && original_price ? (
             <div className="mt-4">
-              <p className="text-red-500 line-through text-sm">{displayOriginalPrice} DA</p>
+              <p className="text-red-500 line-through text-sm">{original_price} DA</p>
               <p className="text-green-600 font-medium">{price} DA</p>
             </div>
           ) : (
@@ -93,7 +91,7 @@ export function ProductCard({
               <p className="text-gray-700">{description}</p>
               {promoted && original_price ? (
                 <div className="mt-4">
-                  <p className="text-red-500 line-through">{displayOriginalPrice} DA</p>
+                  <p className="text-red-500 line-through">{original_price} DA</p>
                   <p className="text-green-600 font-semibold text-lg">{price} DA</p>
                 </div>
               ) : (

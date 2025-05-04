@@ -70,20 +70,18 @@ export function PromotionsManagement() {
     if (!selectedProduct) return;
     
     try {
-      // Store the original price before promotion
-      const originalPrice = selectedProduct.price;
-      
-      // Create a simpler update object
-      const updateData = { 
+      // Determine the update data
+      const updateData: any = { 
         is_promoted: true,
         price: newPrice
       };
       
-      // Only store original price if it doesn't exist yet
+      // If it's the first time we're promoting this product, store the original price
+      // or if the product doesn't have an original price yet
       if (!selectedProduct.original_price) {
-        updateData['original_price'] = originalPrice;
+        updateData.original_price = selectedProduct.price;
       }
-
+      
       console.log("Updating product with data:", updateData);
       
       const { error } = await supabase
@@ -118,14 +116,21 @@ export function PromotionsManagement() {
 
   const togglePromotion = async (productId: string, currentlyPromoted: boolean) => {
     if (currentlyPromoted) {
-      // Remove from promotions
+      // Remove from promotions - reset price to original price if available
       try {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+        
+        const updateData: any = { is_promoted: false };
+        
+        // If we have an original price, restore it
+        if (product.original_price) {
+          updateData.price = product.original_price;
+        }
+        
         const { error } = await supabase
           .from('products')
-          .update({ 
-            is_promoted: false,
-            price: selectedProduct?.original_price || selectedProduct?.price
-          })
+          .update(updateData)
           .eq('id', productId);
 
         if (error) {
@@ -159,7 +164,6 @@ export function PromotionsManagement() {
     }
   };
 
-  // Update the ProductCard component too to ensure consistency
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow">
@@ -208,13 +212,11 @@ export function PromotionsManagement() {
               />
               <h3 className="font-bold">{product.name}</h3>
               <div className="mt-2">
-                {product.is_promoted ? (
+                {product.is_promoted && (
                   <>
                     <p className="text-red-500 line-through">{product.original_price || product.price} DA</p>
                     <p className="text-green-600 font-semibold">{product.price} DA</p>
                   </>
-                ) : (
-                  <p className="text-lg font-semibold">{product.price} DA</p>
                 )}
               </div>
               <div className="mt-4 flex justify-end space-x-2">

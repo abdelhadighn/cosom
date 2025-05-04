@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -72,6 +73,10 @@ export function MessagesManagement() {
 
   const deleteMessage = async (id: string) => {
     try {
+      // First update the UI optimistically
+      setMessages(messages.filter(msg => msg.id !== id));
+      
+      // Then perform the actual delete operation
       const { error } = await supabase
         .from('messages')
         .delete()
@@ -84,9 +89,9 @@ export function MessagesManagement() {
           description: "Impossible de supprimer le message: " + error.message,
           variant: "destructive"
         });
+        // If deletion fails, restore the UI by refetching messages
+        await fetchMessages();
       } else {
-        // Update the local state to immediately remove the message
-        setMessages(messages.filter(msg => msg.id !== id));
         toast({
           title: "Succès",
           description: "Message supprimé avec succès"
@@ -99,6 +104,8 @@ export function MessagesManagement() {
         description: "Une erreur inattendue s'est produite",
         variant: "destructive"
       });
+      // If an exception occurs, restore the UI by refetching messages
+      await fetchMessages();
     }
   };
 

@@ -14,6 +14,13 @@ interface MessageItemProps {
 }
 
 export function MessageItem({ message, onMarkAsRead, onDelete }: MessageItemProps) {
+  const handleDelete = () => {
+    // Confirm before deleting
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce message ?")) {
+      onDelete(message.id);
+    }
+  };
+  
   return (
     <div className={`p-4 rounded-lg border ${message.read ? 'bg-gray-50' : 'bg-white border-consom'}`}>
       <div className="flex justify-between items-start mb-2">
@@ -24,7 +31,7 @@ export function MessageItem({ message, onMarkAsRead, onDelete }: MessageItemProp
           <Button 
             variant="destructive" 
             size="sm"
-            onClick={() => onDelete(message.id)}
+            onClick={handleDelete}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
