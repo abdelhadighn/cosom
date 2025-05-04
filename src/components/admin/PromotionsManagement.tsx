@@ -62,7 +62,7 @@ export function PromotionsManagement() {
 
   const openPromotionDialog = (product: any) => {
     setSelectedProduct(product);
-    setNewPrice(product.promotional_price || product.price);
+    setNewPrice(product.price);
     setIsPromotionDialogOpen(true);
   };
 
@@ -70,28 +70,26 @@ export function PromotionsManagement() {
     if (!selectedProduct) return;
     
     try {
-      // Make sure we have the original price stored
-      const originalPrice = selectedProduct.original_price || selectedProduct.price;
+      // Store the original price before promotion
+      const originalPrice = selectedProduct.price;
       
-      // Create update object with only the fields we want to update
+      // Create a simpler update object
       const updateData = { 
-        is_promoted: true, 
-        original_price: originalPrice,
-        price: selectedProduct.price // Ensure price remains unchanged
+        is_promoted: true,
+        price: newPrice
       };
       
-      // Only add promotional_price if it's different from the original value
-      if (newPrice !== selectedProduct.price) {
-        updateData['promotional_price'] = newPrice;
+      // Only store original price if it doesn't exist yet
+      if (!selectedProduct.original_price) {
+        updateData['original_price'] = originalPrice;
       }
 
       console.log("Updating product with data:", updateData);
       
-      const { error, data } = await supabase
+      const { error } = await supabase
         .from('products')
         .update(updateData)
-        .eq('id', selectedProduct.id)
-        .select();
+        .eq('id', selectedProduct.id);
 
       if (error) {
         console.error("Update promotion error:", error);
@@ -126,7 +124,7 @@ export function PromotionsManagement() {
           .from('products')
           .update({ 
             is_promoted: false,
-            promotional_price: null
+            price: selectedProduct?.original_price || selectedProduct?.price
           })
           .eq('id', productId);
 
@@ -176,10 +174,10 @@ export function PromotionsManagement() {
               />
               <h3 className="font-bold">{product.name}</h3>
               <div className="mt-2">
-                {product.is_promoted && product.promotional_price ? (
+                {product.is_promoted ? (
                   <>
                     <p className="text-red-500 line-through">{product.original_price || product.price} DA</p>
-                    <p className="text-green-600 font-semibold">{product.promotional_price} DA</p>
+                    <p className="text-green-600 font-semibold">{product.price} DA</p>
                   </>
                 ) : (
                   <p className="text-lg font-semibold">{product.price} DA</p>
@@ -210,10 +208,10 @@ export function PromotionsManagement() {
               />
               <h3 className="font-bold">{product.name}</h3>
               <div className="mt-2">
-                {product.promotional_price ? (
+                {product.is_promoted ? (
                   <>
                     <p className="text-red-500 line-through">{product.original_price || product.price} DA</p>
-                    <p className="text-green-600 font-semibold">{product.promotional_price} DA</p>
+                    <p className="text-green-600 font-semibold">{product.price} DA</p>
                   </>
                 ) : (
                   <p className="text-lg font-semibold">{product.price} DA</p>

@@ -28,7 +28,6 @@ export function ProductCard({
   price, 
   isPromoted = false,
   is_promoted = false,
-  promotional_price,
   original_price
 }: ProductCardProps) {
   // Use either is_promoted or isPromoted, whichever is available
@@ -65,10 +64,10 @@ export function ProductCard({
           <h3 className="font-medium text-base mt-1">{name}</h3>
           <p className="text-gray-600 text-sm mt-2 line-clamp-2">{description}</p>
           
-          {promoted && promotional_price ? (
+          {promoted && original_price ? (
             <div className="mt-4">
               <p className="text-red-500 line-through text-sm">{displayOriginalPrice} DA</p>
-              <p className="text-green-600 font-medium">{promotional_price} DA</p>
+              <p className="text-green-600 font-medium">{price} DA</p>
             </div>
           ) : (
             price && <p className="font-medium mt-4">{price} DA</p>
@@ -92,10 +91,10 @@ export function ProductCard({
             </div>
             <div className="space-y-2">
               <p className="text-gray-700">{description}</p>
-              {promoted && promotional_price ? (
+              {promoted && original_price ? (
                 <div className="mt-4">
                   <p className="text-red-500 line-through">{displayOriginalPrice} DA</p>
-                  <p className="text-green-600 font-semibold text-lg">{promotional_price} DA</p>
+                  <p className="text-green-600 font-semibold text-lg">{price} DA</p>
                 </div>
               ) : (
                 price && <p className="text-lg font-semibold text-consom mt-2">{price} DA</p>
