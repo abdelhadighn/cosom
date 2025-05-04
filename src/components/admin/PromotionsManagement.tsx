@@ -26,32 +26,38 @@ export function PromotionsManagement() {
   }, []);
 
   const fetchProducts = async () => {
-    const [productsResponse, promotedResponse] = await Promise.all([
-      supabase.from('products').select('*').order('name'),
-      supabase.from('products').select('*').eq('is_promoted', true)
-    ]);
+    try {
+      const [productsResponse, promotedResponse] = await Promise.all([
+        supabase.from('products').select('*').order('name'),
+        supabase.from('products').select('*').eq('is_promoted', true)
+      ]);
 
-    if (productsResponse.error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les produits",
-        variant: "destructive"
-      });
-    } else {
-      setProducts(productsResponse.data || []);
-    }
+      if (productsResponse.error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les produits",
+          variant: "destructive"
+        });
+        console.error("Error fetching products:", productsResponse.error);
+      } else {
+        setProducts(productsResponse.data || []);
+      }
 
-    if (promotedResponse.error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les promotions",
-        variant: "destructive"
-      });
-    } else {
-      setPromotedProducts(promotedResponse.data || []);
+      if (promotedResponse.error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les promotions",
+          variant: "destructive"
+        });
+        console.error("Error fetching promotions:", promotedResponse.error);
+      } else {
+        setPromotedProducts(promotedResponse.data || []);
+      }
+    } catch (err) {
+      console.error("Unexpected error fetching data:", err);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const openPromotionDialog = (product: any) => {
@@ -67,14 +73,25 @@ export function PromotionsManagement() {
       // Make sure we have the original price stored
       const originalPrice = selectedProduct.original_price || selectedProduct.price;
       
-      const { error } = await supabase
+      // Create update object with only the fields we want to update
+      const updateData = { 
+        is_promoted: true, 
+        original_price: originalPrice,
+        price: selectedProduct.price // Ensure price remains unchanged
+      };
+      
+      // Only add promotional_price if it's different from the original value
+      if (newPrice !== selectedProduct.price) {
+        updateData['promotional_price'] = newPrice;
+      }
+
+      console.log("Updating product with data:", updateData);
+      
+      const { error, data } = await supabase
         .from('products')
-        .update({ 
-          is_promoted: true, 
-          promotional_price: newPrice,
-          original_price: originalPrice
-        })
-        .eq('id', selectedProduct.id);
+        .update(updateData)
+        .eq('id', selectedProduct.id)
+        .select();
 
       if (error) {
         console.error("Update promotion error:", error);
